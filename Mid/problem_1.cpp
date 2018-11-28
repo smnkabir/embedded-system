@@ -109,7 +109,7 @@ void music(){
 }
 
 int main(){
-	DDRB &= ~((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3)|(1<<PB4)); // SET PB 0-4 AS INPUT
+	DDRB &= ~((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3)|(1<<PB4)); // SET PB 0-4 AS INPUT. PORTB0 = CENTER, PORTB1 = UP, PORTB2 = DOWN, PORTB3 = LEFT, PORTB4 = RIGHT
 	DDRD = ((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3)|(1<<PB4));
 	while(1){
 		switch (stage) {
