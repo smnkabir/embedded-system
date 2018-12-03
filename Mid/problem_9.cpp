@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <util/delay.h>
 #include <string.h>
+#include <inttypes.h>
 
 #define F_CPU 16000000UL /**< Clock speed for delay functions. */
 #define FOSC 16000000 //*< Clock speed for UBRR calculation. refer page
@@ -21,6 +22,9 @@
 int8_t candidate_id[3], i = 0;
 unsigned char str[100]; // variable to store received data
 unsigned char splitString[2][6];
+int8_t source_candidate = 0;
+int8_t destination_candidate = 0;
+int8_t frequency = 0;
 
 unsigned char login[] = "u admin p abc123";
 
@@ -100,7 +104,14 @@ void vote_counter() {
 			if (k == 22) {
 				uint8_t index = candidate_id[0] + 10 * candidate_id[1]
 						+ 100 * candidate_id[2];
-				candidate[index]++; // vote counted for (index) candidate
+				if (frequency != 0 && index == source_candidate
+						&& candidate[index] != 1
+						&& (candidate[index] % frequency == 1)) {
+					candidate[destination_candidate]++;
+				} else {
+					candidate[index]++; // vote counted for (index) candidate
+				}
+
 				if (lastCandidate < index)
 					lastCandidate = index;
 
@@ -120,11 +131,14 @@ void vote_counter() {
 
 int8_t is_valid() {
 	printf("login: ");
-	scanf("%[^\n]%*c", str);
-	if (strcmp(str, login) == 0) {
-		return 1;
-	} else
-		return 0;
+	while (1) {
+		scanf("%[^\n]%*c", str);
+		if (strcmp(str, login) == 0) {
+			return 1;
+		} else {
+			printf("login: ");
+		}
+	}
 }
 
 void split() {
@@ -169,6 +183,28 @@ void command() {
 		} else if (strcmp(str, "reset") == 0) {
 			for (int8_t i = 0; i <= lastCandidate; i++)
 				candidate[i] = 0;
+		} else if (strcmp(str, "CONFIG CHEAT") == 0) {
+			unsigned char dec;
+			printf("> PLEASE ENTER SOURCE CANDIDATE #\n");
+			scanf("%"PRIi8"", &source_candidate);
+			printf("> PLEASE ENTER DESTINATION CANDIDATE #\n");
+			scanf("%"PRIi8"", &destination_candidate);
+			printf("> PLEASE enter frequency\n");
+			scanf("%"PRIi8"", &frequency);
+			printf(
+					"> Config: Cndidate %"PRIi8" will receive every %"PRIi8"(st/th) vote casted for Candidate %"PRIi8"\n",
+					destination_candidate, frequency + 1, source_candidate);
+			printf("Confirm? Enter Y for yes and D to discard\n");
+			scanf("%c", &dec);
+			if (dec == 'y') {
+
+			} else {
+				source_candidate = 0;
+				destination_candidate = 0;
+				frequency = 0;
+
+			}
+
 		}
 
 	}
@@ -184,11 +220,13 @@ int main() {
 			scanf("%[^\n]%*c", str);
 			if (strcmp(str, "ENABLE 1") == 0) {
 				printf(">Machine enabled\n");
+				command();
 				vote_counter();
-			} else if (strcmp(str, "ENABLE 0") == 0) {
-				printf(">Machine disabled\n");
 			}
+		} else if (strcmp(str, "ENABLE 0") == 0) {
+			printf(">Machine disabled\n");
 		}
+
 	}
 
 }

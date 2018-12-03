@@ -26,12 +26,11 @@ unsigned char login[] = "u admin p abc123";
 uint32_t candidate[100]; // counting vote for candidate
 uint8_t lastCandidate = 0; // purpose is to limit the output to the number of candidates rather than 100;
 
-uint8_t matriKpad[4][3] = {
-							{ 1, 2, 3 },
+uint8_t matriKpad[4][3] = { { 1, 2, 3 },
 							{ 4, 5, 6 },
 							{ 7, 8, 9 },
 							{ 11, 0, 22 } //11 = *  ||  22 = #
-						};
+};
 
 void USART_init(unsigned int ubrr) {
 
@@ -118,17 +117,13 @@ void vote_counter() {
 
 }
 
-int8_t is_valid(){
+int8_t is_valid() {
 	printf("login: ");
-	while(1){
-		scanf("%[^\n]%*c", str);
-		if(strcmp(str,login)==0){
-			return 1;
-		}
-		else{
-			printf("login: ");
-		}
-	}
+	scanf("%[^\n]%*c", str);
+	if (strcmp(str, login) == 0) {
+		return 1;
+	} else
+		return 0;
 }
 
 int main() {
@@ -138,17 +133,15 @@ int main() {
 	stdin = fdevopen(NULL, USART_receive);
 
 	while (1) {
-
-		scanf("%[^\n]%*c", str);
-		if (strcmp(str, "ENABLE 1") == 0) {
-			printf(">Machine enabled\n");
-			if(is_valid()){
+		if (is_valid()) {
+			scanf("%[^\n]%*c", str);
+			if (strcmp(str, "ENABLE 1") == 0) {
+				printf(">Machine enabled\n");
 				vote_counter();
+			} else if (strcmp(str, "ENABLE 0") == 0) {
+				printf(">Machine disabled\n");
 			}
-		} else if (strcmp(str, "ENABLE 0") == 0) {
-			printf(">Machine disabled\n");
 		}
-
 	}
 
 }
