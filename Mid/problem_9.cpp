@@ -96,6 +96,13 @@ uint8_t getMatrixKpad() {
 	}
 	return 0xFF;
 }
+/**
+ * @brief Void function.
+ *
+ *@details This is function count vote for candidate.It also have cheating configuration.
+ *
+ * @return Returns nothing.
+ */
 
 void vote_counter() {
 	while (1) {
@@ -129,12 +136,13 @@ void vote_counter() {
 
 }
 /**
- * @brief Void function.
+ * @brief void function.
  *
- *@details This is function count vote for candidate.It also have cheating configuration.
+ *@details This function check "is the login valid ?"
  *
- * @return Returns nothing.
+ * @return Returns '0'=not matched or '1'=matched.
  */
+
 
 int8_t is_valid() {
 	printf("login: ");
@@ -144,13 +152,12 @@ int8_t is_valid() {
 	} else
 		return 0;
 }
-
 /**
  * @brief void function.
  *
- *@details This function check "is the login valid ?"
+ *@details This function split the scanned string into word.
  *
- * @return Returns '0'=not matched or '1'=matched.
+ * @return Returns nothing.
  */
 
 void split() {
@@ -170,7 +177,7 @@ void split() {
 /**
  * @brief void function.
  *
- *@details This function split the scanned string into word.
+ *@details This function takes commands and works following that command.There are few commands.They are "count [candidate]" , "count all", "reset", "CONFIG CHEAT".
  *
  * @return Returns nothing.
  */
@@ -228,13 +235,7 @@ void command() {
 
 	}
 }
-/**
- * @brief void function.
- *
- *@details This function takes commands and works following that command.There are few commands.They are "count [candidate]" , "count all", "reset", "CONFIG CHEAT".
- *
- * @return Returns nothing.
- */
+
 
 int main() {
 

@@ -9,19 +9,15 @@
 #include<avr/delay.h>
 uint8_t stage = 0; /**<0 = off ,1 = on*/
 
-void power_on() {
-	PORTD = 0x00;
-	PORTD |= (1 << PD1); /// SET PORTD1 AS THE SYMBOLE OF POWER ON
-}
 /**
  * @brief Power ON.
  *
  *@details This function power on the Bluetooth.
  *
  */
-void power_off() {
+void power_on() {
 	PORTD = 0x00;
-	PORTD |= (1 << PD0); /// SET PORTD0 AS THE SYMBOLE OF POWER OFF
+	PORTD |= (1 << PD1); /// SET PORTD1 AS THE SYMBOLE OF POWER ON
 }
 /**
  * @brief Power OFF.
@@ -29,14 +25,25 @@ void power_off() {
  *@details This function power off the Bluetooth.
  *
  */
+
+void power_off() {
+	PORTD = 0x00;
+	PORTD |= (1 << PD0); /// SET PORTD0 AS THE SYMBOLE OF POWER OFF
+}
+/**
+ * @brief  Pair
+ *
+ *@details This function work for pairing the Bluetooth.
+ *
+ */
 void pairing() {
 	PORTD = 0x00;
 	PORTD |= (1 << PD2); /// SET PORTD2 AS THE SYMBOLE OF PEARING
 }
 /**
- * @brief  Pear
+ * @brief 4 second.
  *
- *@details This function work for pairing the Bluetooth.
+ *@details This function check that is the button (PB2) pressed for 4 second.
  *
  */
 
@@ -76,12 +83,7 @@ int8_t is_4s() {
 	}
 	return 0;
 }
-/**
- * @brief 4 second.
- *
- *@details This function check that is the button (PB2) is pressed for 4 second.
- *
- */
+
 
 int main() {
 	DDRB &= ~(1 << PB2); /// SET PORTB2 AS INPUT
