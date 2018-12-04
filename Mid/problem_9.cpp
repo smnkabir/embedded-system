@@ -11,31 +11,31 @@
 #include <inttypes.h>
 
 #define F_CPU 16000000UL /**< Clock speed for delay functions. */
-#define FOSC 16000000 //*< Clock speed for UBRR calculation. refer page
+#define FOSC 16000000 /**< Clock speed for UBRR calculation. refer page 179 of 328p datasheet. */
 #define BAUD 9600 /**< Baud Rate in bps. refer page 179 of 328p datasheet. */
 #define MYUBRR FOSC/16/BAUD-1 /**< UBRR = (F_CPU/(16*Baud))-1 for asynch USART page 179 328p datasheet. Baud rate 9600bps, assuming	16MHz clock UBRR0 becomes 0x0067*/
 
-#define matrixDDR DDRD
+#define matrixDDR DDRD /**< Data Direction Register PORTD for matrix keypad.*/
 #define matrixPORT PORTD
 #define matrixPIN PIND
 
-int8_t candidate_id[3], i = 0;
-unsigned char str[100]; // variable to store received data
-unsigned char splitString[2][6];
-int8_t source_candidate = 0;
-int8_t destination_candidate = 0;
-int8_t frequency = 0;
+int8_t candidate_id[3], i = 0; /**< This array is to store the value pressed on matrix keypad and calculate the index of that candidate.*/
+unsigned char str[100]; /**< variable to store received data from console.*/
+unsigned char splitString[2][6];/**< It stores the value of splitted string.*/
+int8_t source_candidate = 0; /**<This variable is declared for cheating purpose to store the source candidate.*/
+int8_t destination_candidate = 0;/**<This variable is declared for cheating purpose to store the destination candidate.*/
+int8_t frequency = 0;/**<This variable is declared for cheating purpose to store the Frequency of cheated vote.*/
 
-unsigned char login[] = "u admin p abc123";
+unsigned char login[] = "u admin p abc123";/**<This is a string to hold username and password.It can be declared as 2D array for multiple user.*/
 
-uint32_t candidate[100]; // counting vote for candidate
-uint8_t lastCandidate = 0; // purpose is to limit the output to the number of candidates rather than 100;
+uint32_t candidate[100]; /**< counting vote for candidate*/
+uint8_t lastCandidate = 0; /**< purpose is to limit the output to the number of candidates rather than 100.*/
 
 uint8_t matriKpad[4][3] = { { 1, 2, 3 },
 							{ 4, 5, 6 },
 							{ 7, 8, 9 },
-							{ 11, 0, 22 } //11 = *  ||  22 = #
-};
+							{ 11, 0, 22 } ///11 = *  ||  22 = #
+};/**<Matrix keypad data.*/
 
 void USART_init(unsigned int ubrr) {
 
@@ -100,20 +100,20 @@ uint8_t getMatrixKpad() {
 void vote_counter() {
 	while (1) {
 		uint8_t k = getMatrixKpad();
-		if (k != 0xFF && k != 11 && !(i == 0 && k == 22)) {
+		if (k != 0xFF && k != 11 && !(i == 0 && k == 22)) { /// this condition is for error checking purpose.The first key can't be '*' or '#'.
 			if (k == 22) {
 				uint8_t index = candidate_id[0] + 10 * candidate_id[1]
-						+ 100 * candidate_id[2];
+						+ 100 * candidate_id[2];  /// calculate the index of candidate for whom the vote is casted.
 				if (frequency != 0 && index == source_candidate
 						&& candidate[index] != 1
 						&& (candidate[index] % frequency == 1)) {
-					candidate[destination_candidate]++;
+					candidate[destination_candidate]++;/// cheating vote.
 				} else {
-					candidate[index]++; // vote counted for (index) candidate
+					candidate[index]++; /// vote counted for (index) candidate.
 				}
 
 				if (lastCandidate < index)
-					lastCandidate = index;
+					lastCandidate = index;///updating last candidate index.
 
 				candidate_id[0] = 0;
 				candidate_id[1] = 0;
@@ -128,18 +128,30 @@ void vote_counter() {
 	}
 
 }
+/**
+ * @brief Void function.
+ *
+ *@details This is function count vote for candidate.It also have cheating configuration.
+ *
+ * @return Returns nothing.
+ */
 
 int8_t is_valid() {
 	printf("login: ");
-	while (1) {
-		scanf("%[^\n]%*c", str);
-		if (strcmp(str, login) == 0) {
-			return 1;
-		} else {
-			printf("login: ");
-		}
-	}
+	scanf("%[^\n]%*c", str);
+	if (strcmp(str, login) == 0) {///compare two string.
+		return 1;
+	} else
+		return 0;
 }
+
+/**
+ * @brief void function.
+ *
+ *@details This function check "is the login valid ?"
+ *
+ * @return Returns '0'=not matched or '1'=matched.
+ */
 
 void split() {
 	int8_t i, j, ind;
@@ -155,6 +167,13 @@ void split() {
 		}
 	}
 }
+/**
+ * @brief void function.
+ *
+ *@details This function split the scanned string into word.
+ *
+ * @return Returns nothing.
+ */
 
 void command() {
 
@@ -192,7 +211,7 @@ void command() {
 			printf("> PLEASE enter frequency\n");
 			scanf("%"PRIi8"", &frequency);
 			printf(
-					"> Config: Cndidate %"PRIi8" will receive every %"PRIi8"(st/th) vote casted for Candidate %"PRIi8"\n",
+					"> Config: Candidate %"PRIi8" will receive every %"PRIi8"(st/th) vote casted for Candidate %"PRIi8"\n",
 					destination_candidate, frequency + 1, source_candidate);
 			printf("Confirm? Enter Y for yes and D to discard\n");
 			scanf("%c", &dec);
@@ -209,6 +228,14 @@ void command() {
 
 	}
 }
+/**
+ * @brief void function.
+ *
+ *@details This function takes commands and works following that command.There are few commands.They are "count [candidate]" , "count all", "reset", "CONFIG CHEAT".
+ *
+ * @return Returns nothing.
+ */
+
 int main() {
 
 	USART_init(MYUBRR);

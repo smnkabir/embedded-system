@@ -9,7 +9,7 @@
 #include<stdbool.h>
 #include<stdio.h>
 
-int8_t stage = 1; // 0 means calling stage ,1 means music stage;
+int8_t stage = 1; /**< 0 means calling stage ,1 means music stage.*/
 
 void volume_up() {
 	printf("volume_up");
@@ -17,42 +17,78 @@ void volume_up() {
 	_delay_ms(2000);
 	PORTD &= ~(1 << PD1);
 }
+/**
+ * @brief Increase the volume.
+ *
+ *@details This function does work for volume up.For testing purpose it will blink LED1.
+ */
+
 void volume_down() {
 	printf("volume_down");
 	PORTD |= (1 << PD2);
 	_delay_ms(2000);
 	PORTD &= ~(1 << PD2);
 }
+/**
+ * @brief Decrease the volume.
+ *
+ *@details This function does work for volume down.For testing purpose it will blink LED2.
+ */
 void answer_call() {
 	printf("answer_call");
 	PORTD |= (1 << PD0);
 	_delay_ms(2000);
 	PORTD &= ~(1 << PD0);
 }
+/**
+ * @brief Answer the call.
+ *
+ *@details This function does work for answering call.For testing purpose it will blink LED0.
+ */
 void reject_call() {
 	printf("reject_call");
 	PORTD |= (1 << PD0);
 	_delay_ms(2000);
 	PORTD &= ~(1 << PD0);
 }
+/**
+ * @brief Reject the call.
+ *
+ *@details This function does work for rejecting call.For testing purpose it will blink LED0.
+ */
 void next_song() {
 	printf("next_song");
 	PORTD |= (1 << PD4);
 	_delay_ms(2000);
 	PORTD &= ~(1 << PD4);
 }
+/**
+ * @brief Next song.
+ *
+ *@details This function does work for next song.For testing purpose it will blink LED4.
+ */
 void previous_song() {
 	printf("previos_song");
 	PORTD |= (1 << PD3);
 	_delay_ms(2000);
 	PORTD &= ~(1 << PD3);
 }
+/**
+ * @brief Previous song.
+ *
+ *@details This function does work for previous song.For testing purpose it will blink LED3.
+ */
 void play_song() {
 	printf("play_song");
 	PORTD |= (1 << PD0);
 	_delay_ms(2000);
 	PORTD &= ~(1 << PD0);
 }
+/**
+ * @brief play song.
+ *
+ *@details This function does work for play song.For testing purpose it will blink LED0.
+ */
 void pause_song() {
 	printf("pause_song");
 	PORTD |= (1 << PD0);
@@ -60,6 +96,11 @@ void pause_song() {
 	PORTD &= ~(1 << PD0);
 
 }
+/**
+ * @brief Pause song.
+ *
+ *@details This function does work for pause song.For testing purpose it will blink LED0.
+ */
 
 void call() {
 	while (1) {
@@ -80,6 +121,11 @@ void call() {
 		}
 	}
 }
+/**
+ * @brief Call stage
+ *
+ *@details This function does work when it is calling stage where stage '0' means calling stage and '1' means music satage.
+ */
 void music() {
 	bool playing = true;
 	while (1) {
@@ -116,10 +162,15 @@ void music() {
 
 	}
 }
-
+/**
+ * @brief Music stage
+ *
+ *@details This function does work when it is music stage where stage '0' means calling stage and '1' means music satage.
+ *@details It controls the center, up, down, left,right functionality.
+ */
 int main() {
-	DDRB &= ~((1 << PB0) | (1 << PB1) | (1 << PB2) | (1 << PB3) | (1 << PB4)); // SET PB 0-4 AS INPUT
-	DDRD = ((1 << PD0) | (1 << PD1) | (1 << PD2) | (1 << PD3) | (1 << PD4));
+	DDRB &= ~((1 << PB0) | (1 << PB1) | (1 << PB2) | (1 << PB3) | (1 << PB4)); /// SET PORTB 0-4 AS INPUT.
+	DDRD = ((1 << PD0) | (1 << PD1) | (1 << PD2) | (1 << PD3) | (1 << PD4)); /// SET PORTD 0-4 AS OUTPUT.
 	while (1) {
 		switch (stage) {
 		case 0:
