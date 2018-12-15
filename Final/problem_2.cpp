@@ -164,8 +164,8 @@ int main() {
 			PORTD ^= (1 << PD2);
 
 			uint16_t first_pot = read_ADC(0); /// read the value for minutes
-			uint16_t second_pot = read_ADC(0); /// read the value for seconds
-			uint16_t third_pot = read_ADC(0); /// read the value for milliseconds
+			uint16_t second_pot = read_ADC(1); /// read the value for seconds
+			uint16_t third_pot = read_ADC(2); /// read the value for milliseconds
 			estimated_time = ((uint32_t) first_pot * 60 * 1000000)
 					+ ((uint32_t) second_pot * 1000000)
 					+ ((uint32_t) third_pot * 1000); /// estimation of ADC pot value all together
